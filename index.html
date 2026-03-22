@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#800000" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>OJA System V17</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              oja: {
+                dark: '#0a0a0a',
+                darker: '#1a0000',
+                red: '#800000',
+                accent: '#ff3333',
+                warning: '#ffcc00',
+                success: '#00e676',
+                card: 'rgba(255, 255, 255, 0.08)',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background: linear-gradient(135deg, #0a0a0a 0%, #2c0000 100%);
+        min-height: 100vh;
+        color: white;
+        /* Prevent pull-to-refresh on mobile */
+        overscroll-behavior-y: none;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a0000; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #800000; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ff3333; 
+      }
+    </style>
+    <link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- FEATURE 5: CLOUD SYNC SETUP (Firebase) -->
+    <!-- This structure allows the app to connect to cloud if config is provided -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+      // -----------------------------------------------------------
+      // CLOUD CONFIGURATION (Feature 5)
+      // To enable Online Sync, replace 'null' with your Firebase Config object.
+      // -----------------------------------------------------------
+      const firebaseConfig = null; 
+      /* Example Config:
+      const firebaseConfig = {
+        apiKey: "AIzaSy...",
+        authDomain: "oja-app.firebaseapp.com",
+        projectId: "oja-app",
+        storageBucket: "oja-app.appspot.com",
+        messagingSenderId: "...",
+        appId: "..."
+      };
+      */
+
+      if (firebaseConfig) {
+        try {
+          const app = initializeApp(firebaseConfig);
+          window.db = getFirestore(app);
+          window.auth = getAuth(app);
+          console.log("OJA Cloud: Connected");
+        } catch (e) {
+          console.error("OJA Cloud Connection Failed:", e);
+        }
+      } else {
+        console.log("OJA System: Offline Mode (Local Storage)");
+      }
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
